@@ -89,7 +89,7 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
             #rc_45_to_60, rc_60_ft
             ]
 
-def parse_live_table(driver):
+def parse_live_table(driver, standart_delay=1):
     MATCH_STAT = Temp_List()
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_raiting_team_home).text)
@@ -100,7 +100,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_total_shots_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_total_shots_away).text)
@@ -118,7 +118,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_possession_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_possession_away).text)
@@ -130,7 +130,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_pass_success_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_pass_success_away).text)
@@ -146,7 +146,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dribbles_won_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dribbles_won_away).text)
@@ -160,7 +160,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_aerials_won_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_aerials_won_away).text)
@@ -176,7 +176,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_successful_tackles_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_successful_tackles_away).text)
@@ -194,7 +194,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    time.sleep(1.5)
+    time.sleep(standart_delay+1)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_corners_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_corners_away).text)
@@ -206,7 +206,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    time.sleep(1.5)
+    time.sleep(standart_delay+1)
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dispossessed_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dispossessed_away).text)
@@ -222,11 +222,11 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.click(elem)
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     return MATCH_STAT
 
-def parse_chalkboard(driver):
+def parse_chalkboard(driver, standart_delay=1):
     MATCH_STAT = Temp_List()
 
     elem = driver.find_element_by_xpath(xpath_to_shots_chalkboard)
@@ -234,7 +234,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(shots_zones_6_yard_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(shots_zones_6_yard_away).text)
@@ -266,7 +266,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(passes_cross_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(passes_cross_away).text)
@@ -308,7 +308,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(dribbles_successful_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(dribbles_successful_away).text)
@@ -320,7 +320,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(tackles_attempted_succesful_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(tackles_attempted_succesful_away).text)
@@ -335,7 +335,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(clearances_total_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(clearances_total_away).text)
@@ -351,7 +351,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(blocked_shots_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(blocked_shots_away).text)
@@ -363,7 +363,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    time.sleep(1)
+    time.sleep(standart_delay)
 
     MATCH_STAT.append(driver.find_element_by_xpath(errors_leads_to_shot_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(errors_lead_to_shot_away).text)
@@ -524,9 +524,16 @@ def parse_whoscored(url, driver):
 
     driver.execute_script(script_scroll_down, 1000)
     time.sleep(3)
+    try:
+        home_stat = parse_yc_rc_goals(xpath_to_home_stat, driver)
+        away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
+    except NoSuchElementException:
+        print(traceback.format_exc())
+        driver.execute_script(script_scroll_down, 1000)
+        time.sleep(2)
+        home_stat = parse_yc_rc_goals(xpath_to_home_stat, driver)
+        away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
 
-    home_stat = parse_yc_rc_goals(xpath_to_home_stat, driver)
-    away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
     if home_stat[0] > away_stat[0]:
         MATCH_STAT.append('1')
     elif home_stat[0] < away_stat[0]:
@@ -536,12 +543,17 @@ def parse_whoscored(url, driver):
     MATCH_STAT += home_stat
     MATCH_STAT += away_stat
 
-
     SQL_TEMPLATE += sql_columns_of_time_stat
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
-    # 1 to 90
-    MATCH_STAT += parse_live_table(driver)
+    try:
+        MATCH_STAT += parse_live_table(driver)
+    except NoSuchElementException:
+        print(traceback.format_exc())
+        MATCH_STAT += parse_live_table(driver)
+    except AssertionError:
+        print(traceback.format_exc())
+        MATCH_STAT += parse_live_table(driver, standart_delay=3)
     SQL_TEMPLATE += sql_columns_of_full_time_stat
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
@@ -554,6 +566,8 @@ def parse_whoscored(url, driver):
         action.perform()
         time.sleep(5)
     except MoveTargetOutOfBoundsException:
+        print(traceback.format_exc())
+
         driver.execute_script(script_scroll_down, 1300)
         time.sleep(1.5)
         action = ActionChains(driver)
@@ -568,63 +582,24 @@ def parse_whoscored(url, driver):
         MATCH_STAT += parse_live_table(driver)
     except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_live_table(driver)
+        MATCH_STAT += parse_live_table(driver, standart_delay=3)
     SQL_TEMPLATE += sql_columns_of_half_time_stat
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
-    """
-    # 45 to 90
-    elem = driver.find_elements_by_css_selector(css_to_time_scroll)
+    driver.execute_script(script_scroll_down, 600)
+    time.sleep(1)
+
+    MATCH_STAT.append("'" + driver.find_element_by_xpath(referee).text.strip() + "'")
+    SQL_TEMPLATE += sql_columns_of_referee
+    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+
+    elem = driver.find_element_by_xpath(xpath_to_chalkboard)
     action = ActionChains(driver)
-    action.move_to_element(elem[1])
-    action.drag_and_drop_by_offset(elem[1], 497, 0)
-    action.move_to_element(elem[0])
-    action.drag_and_drop_by_offset(elem[0], 495, 0)
+    action.move_to_element(elem)
+    action.click(elem)
     action.perform()
-    time.sleep(5)
-    
-    parse_live_table(MATCH_STAT, driver)
-    # 60 to 90
-    elem = driver.find_elements_by_css_selector(css_to_time_scroll)
-    action = ActionChains(driver)
-    action.move_to_element(elem[0])
-    action.drag_and_drop_by_offset(elem[0], 150, 0)
-    action.perform()
-    time.sleep(5)
-    
-    parse_live_table(MATCH_STAT, driver)
-    """
+    time.sleep(1)
 
-    try:
-        driver.execute_script(script_scroll_down, 600)
-        time.sleep(1)
-
-        MATCH_STAT.append("'" + driver.find_element_by_xpath(referee).text.strip() + "'")
-        SQL_TEMPLATE += sql_columns_of_referee
-        assert len(SQL_TEMPLATE) == len(MATCH_STAT)
-
-        elem = driver.find_element_by_xpath(xpath_to_chalkboard)
-        action = ActionChains(driver)
-        action.move_to_element(elem)
-        action.click(elem)
-        action.perform()
-        time.sleep(1)
-    except NoSuchElementException:
-        print(traceback.format_exc())
-
-        driver.execute_script(script_scroll_down, 800)
-        time.sleep(1)
-
-        MATCH_STAT.append("'" + driver.find_element_by_xpath(referee).text.strip() + "'")
-        SQL_TEMPLATE += sql_columns_of_referee
-        assert len(SQL_TEMPLATE) == len(MATCH_STAT)
-
-        elem = driver.find_element_by_xpath(xpath_to_chalkboard)
-        action = ActionChains(driver)
-        action.move_to_element(elem)
-        action.click(elem)
-        action.perform()
-        time.sleep(1)
 
     # 1 to 90
     try:
@@ -633,13 +608,12 @@ def parse_whoscored(url, driver):
         MATCH_STAT += parse_chalkboard(driver)
     except AssertionError as ex:
         print(traceback.format_exc())
-        MATCH_STAT += parse_chalkboard(driver)
+        MATCH_STAT += parse_chalkboard(driver,standart_delay=3)
     except NoSuchElementException as ex:
         print(traceback.format_exc())
         driver.execute_script(script_scroll_down, 1300)
         time.sleep(3)
         MATCH_STAT += parse_chalkboard(driver)
-
     SQL_TEMPLATE += sql_columns_of_full_time_chulkboard
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
@@ -656,44 +630,21 @@ def parse_whoscored(url, driver):
         print(traceback.format_exc())
         driver.execute_script(script_scroll_down, 1300)
         time.sleep(3)
-
         elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
         action = ActionChains(driver)
         action.move_to_element(elem[1])
         action.drag_and_drop_by_offset(elem[1], -497, 0)
         action.perform()
         time.sleep(1)
+
     try:
         MATCH_STAT += parse_chalkboard(driver)
-    except:
+    except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_chalkboard(driver)
+        MATCH_STAT += parse_chalkboard(driver, standart_delay=3)
     SQL_TEMPLATE +=sql_columns_of_half_time_chulkboard
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
-    """
-    # 45 to 90
-    elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
-    action = ActionChains(driver)
-    action.move_to_element(elem[1])
-    action.drag_and_drop_by_offset(elem[1], 497, 0)
-    action.move_to_element(elem[0])
-    action.drag_and_drop_by_offset(elem[0], 495, 0)
-    action.perform()
-    time.sleep(1)
-    
-    parse_chalkboard(MATCH_STAT, driver)
-    
-    # 60 to 90
-    elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
-    action = ActionChains(driver)
-    action.move_to_element(elem[0])
-    action.drag_and_drop_by_offset(elem[0], 150, 0)
-    action.perform()
-    time.sleep(1)
-    
-    parse_chalkboard(MATCH_STAT, driver)
-    """
 
     print(MATCH_STAT)
 
