@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchElementException,MoveTargetOutOfBou
 from parse_whoscored import parse_whoscored
 from selenium.webdriver.firefox.options import Options
 import traceback
-from constant_path import *
+from constant_path import xpath_to_button_prev_month, xpath_to_table_with_matches, path_to_geckodriver_profile, addon_cookies, addon_adblock, script_scroll_down
 """
 Получает список ссылок на матчи с сайта whoscored.com:
 -Сезоны хранятся в списке list_of_number_season
@@ -94,8 +94,9 @@ if list_with_matches_per_season:
             driver2.quit()
             driver.quit()
             exit(-1)
-assert list_of_number_of_season
 
+
+assert list_of_number_of_season
 while list_of_number_of_season:
     season = list_of_number_of_season.pop()
     driver.get("https://www.whoscored.com/Regions/252/Tournaments/2/Seasons/"+season+"/England-Premier-League")
@@ -113,11 +114,11 @@ while list_of_number_of_season:
     time.sleep(10)
 
     try:
-        element = driver.find_element_by_xpath("/html/body/div[6]/div[2]/div[2]/div[6]/dl/dd/div/a[1]")
+        element = driver.find_element_by_xpath(xpath_to_button_prev_month)
         while element.get_attribute("title") != "No data for previous month":
-            elem = driver.find_elements_by_xpath("/html/body/div[6]/div[2]/div[2]/div[8]/table/tbody/*")
+            elem = driver.find_elements_by_xpath(xpath_to_table_with_matches)
             for i in elem:
-                if i.get_attribute("class") == "item alt" or i.get_attribute("class") == "item ":
+                if i.get_attribute("class") in ("item alt", "item "):
                     subelem = str(i.find_element_by_css_selector("td:nth-child(7) > a:nth-child(1)").get_attribute("href")).replace("MatchReport", "Show")
                     list_with_matches_per_season.append(subelem)
             action = ActionChains(driver)
@@ -125,9 +126,9 @@ while list_of_number_of_season:
             action.click(element)
             action.perform()
             time.sleep(7)
-        elem = driver.find_elements_by_xpath("/html/body/div[6]/div[2]/div[2]/div[8]/table/tbody/*")
+        elem = driver.find_elements_by_xpath(xpath_to_table_with_matches)
         for i in elem:
-            if i.get_attribute("class") == "item alt" or i.get_attribute("class") == "item ":
+            if i.get_attribute("class") in ("item alt", "item "):
                 subelem = str(
                     i.find_element_by_css_selector("td:nth-child(7) > a:nth-child(1)").get_attribute("href")).replace(
                     "MatchReport", "Show")
@@ -138,6 +139,7 @@ while list_of_number_of_season:
         open_and_write_Error_file(list_with_matches_per_season)
         open_and_write_Seasons_file(list_of_number_of_season)
         driver.quit()
+        driver2.quit()
         exit(-1)
 
     while list_with_matches_per_season:

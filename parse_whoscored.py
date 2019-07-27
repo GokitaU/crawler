@@ -7,7 +7,8 @@ from constant_path import *
 
 class Temp_List(list):
     def append(self, item=None):
-        assert item is not None
+        if item in (None, ''):
+            raise AssertionError
         super().append(item)
 
 def parse_yc_rc_goals(xpath_to_stat, driver):
@@ -490,12 +491,13 @@ def parse_whoscored(url, driver):
     SQL_TEMPLATE += sql_columns_of_characteristic
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
+    assert url.find("Show") != -1
     url = url.replace("Show", "Preview")
     driver.get(url)
-    time.sleep(1)
+    time.sleep(2)
 
-    HOME = driver.find_element_by_css_selector(css_team_home).text
-    AWAY = driver.find_element_by_css_selector(css_team_away).text
+    HOME = driver.find_element_by_xpath(xpath_team_home).text
+    AWAY = driver.find_element_by_xpath(xpath_team_away).text
 
     driver.execute_script(script_scroll_down, 550)
     time.sleep(1.5)
@@ -509,6 +511,7 @@ def parse_whoscored(url, driver):
     SQL_TEMPLATE += sql_columns_of_probable_stat
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
+    assert url.find("Preview") != -1
     url = url.replace("Preview", "Live")
     driver.get(url)
     time.sleep(2)
@@ -519,7 +522,7 @@ def parse_whoscored(url, driver):
 
     elem = str(driver.find_element_by_css_selector(css_season).text)
     SEASON = "20" + str((elem.strip()[-2:]))
-    if str((elem.strip()[-6:-3])) in ("May", "Jan", "Feb", "Mar", "Apr"):
+    if str((elem.strip()[-6:-3])) in {"May", "Jan", "Feb", "Mar", "Apr"}:
         SEASON = int(SEASON) - 1
 
     driver.execute_script(script_scroll_down, 1000)
@@ -600,11 +603,10 @@ def parse_whoscored(url, driver):
     action.perform()
     time.sleep(1)
 
-
+    driver.execute_script(script_scroll_down, 1100)
+    time.sleep(3)
     # 1 to 90
     try:
-        driver.execute_script(script_scroll_down, 1100)
-        time.sleep(3)
         MATCH_STAT += parse_chalkboard(driver)
     except AssertionError as ex:
         print(traceback.format_exc())
@@ -648,17 +650,16 @@ def parse_whoscored(url, driver):
 
     print(MATCH_STAT)
 
-    k = 0
+
     SQL_string = ""
-    for i in MATCH_STAT:
-        SQL_string += SQL_TEMPLATE[k] + "=" + str(i) + ", "
-        k += 1
+    for sql_column, stat in zip(SQL_TEMPLATE, MATCH_STAT):
+        SQL_string += sql_column + "=" + str(stat) + ", "
     assert len(SQL_string)
 
 
     db = pymysql.connect(host=db_host, port=db_port, user=db_usr, passwd=db_passwd, db=db_name)
     cursor = db.cursor()
     assert cursor.execute("SELECT * FROM " + db_name + " WHERE home='" + HOME + "' && away='" + AWAY + "' && season='" + str(SEASON) + "';")
-    sql = "UPDATE "+str(db_name)+" SET " + str(SQL_string[:-2]) + " WHERE home='" + HOME + "' && away='" + AWAY + "' && season=" + str(SEASON) +";"
+    sql = "UPDATE "+str(db_name)+" SET " + str(SQL_string[:-2]) + " WHERE home='" + HOME + "' && away='" + AWAY + "' && season=" + str(SEASON) + ";"
     cursor.execute(sql)
     db.commit()

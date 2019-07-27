@@ -1,7 +1,7 @@
 from selenium import webdriver
 import time
 import pymysql
-from pymysql.err import IntegrityError
+import traceback
 from selenium.webdriver.firefox.options import Options
 from constant_path import path_to_geckodriver_profile, addon_adblock, addon_cookies, db_passwd, db_host, db_name, db_port, db_usr, template_of_team
 
@@ -35,7 +35,7 @@ for num_season in list_of_season:
     for i in range(380):
          first_team = template_of_team.get((driver.find_element_by_xpath("/html/body/div[9]/div[4]/div[2]/div[3]/div/div[2]/table/tbody/tr[" + str(i+1) + "]/td[5]/span[1]/a/span").text))
          second_team = template_of_team.get((driver.find_element_by_xpath("/html/body/div[9]/div[4]/div[2]/div[3]/div/div[2]/table/tbody/tr[" + str(i+1) + "]/td[5]/span[3]/a/span").text))
-         if (first_team or second_team) is None:
+         if first_team is None or second_team is None:
              print("Team not found")
              driver.quit()
              exit(-1)
@@ -49,8 +49,9 @@ for num_season in list_of_season:
             if(not cursor.execute("SELECT * FROM "+ db_name +" WHERE home='" + str(i[0]) + "' && away='" + str(i[1]) + "' && round='" + str(i[2]) + "' && season='" + str(i[3]) + "'")):
                 sql = "INSERT INTO " + db_name + " (home, away, round, season) VALUES (%s, %s, %s, %s)"
                 cursor.execute(sql, i)
-        except IntegrityError as er:
-            print(er, "home=", str(i[0]), "away=", str(i[1]))
+        except:
+            print(traceback.format_exc())
+            print("home=", str(i[0]), "away=", str(i[1]), "round=", str(i[2]), "season=", str(i[3]))
             exit(-1)
     db.commit()
     driver.quit()
