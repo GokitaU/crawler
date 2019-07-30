@@ -44,7 +44,7 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
     rc_45_to_60 = 0
     rc_until_45 = 0
     rc_60_ft = 0
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath_to_stat)))
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, xpath_to_stat)))
     elem = driver.find_elements_by_xpath(xpath_to_stat)
     for i in elem:
         try:
@@ -109,7 +109,7 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
 def parse_live_table(driver):
     MATCH_STAT = Temp_List()
 
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath_raiting_team_home)))
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, xpath_raiting_team_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_raiting_team_home).text)
 
@@ -121,7 +121,7 @@ def parse_live_table(driver):
     action.click()
     action.perform()
 
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH, xpath_woodwork_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH, xpath_woodwork_home)))
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_total_shots_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_total_shots_away).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_shots_on_target_home).text)
@@ -138,7 +138,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH, xpath_touches_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH, xpath_touches_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_possession_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_possession_away).text)
@@ -150,7 +150,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,xpath_accurate_passes_away)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,xpath_accurate_passes_away)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_pass_success_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_pass_success_away).text)
@@ -166,7 +166,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,xpath_dribbled_past_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,xpath_dribbled_past_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dribbles_won_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dribbles_won_away).text)
@@ -180,7 +180,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,xpath_offensive_aerials_away)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,xpath_offensive_aerials_away)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_aerials_won_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_aerials_won_away).text)
@@ -196,7 +196,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,xpath_interceptions_away)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,xpath_interceptions_away)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_successful_tackles_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_successful_tackles_away).text)
@@ -214,7 +214,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,xpath_corner_accuracy_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,xpath_corner_accuracy_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_corners_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_corners_away).text)
@@ -226,7 +226,7 @@ def parse_live_table(driver):
     action.move_to_element(elem)
     action.double_click(elem)
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,xpath_fouls_away)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,xpath_fouls_away)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dispossessed_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_dispossessed_away).text)
@@ -249,14 +249,14 @@ def parse_live_table(driver):
 def parse_chalkboard(driver):
     MATCH_STAT = Temp_List()
 
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath_to_shots_chalkboard)))
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, xpath_to_shots_chalkboard)))
     elem = driver.find_element_by_xpath(xpath_to_shots_chalkboard)
     action = ActionChains(driver)
     action.move_to_element(elem)
     action.click()
     action.perform()
 
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH, shots_situation_fastbreak_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH, shots_situation_fastbreak_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(shots_zones_6_yard_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(shots_zones_6_yard_away).text)
@@ -288,7 +288,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH, passes_throw_in_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH, passes_throw_in_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(passes_cross_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(passes_cross_away).text)
@@ -330,7 +330,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,dribbles_unsuccessful_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,dribbles_unsuccessful_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(dribbles_successful_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(dribbles_successful_away).text)
@@ -342,7 +342,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,tackles_was_dribbled_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,tackles_was_dribbled_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(tackles_attempted_succesful_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(tackles_attempted_succesful_away).text)
@@ -357,7 +357,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH,clearances_body_parts_feet_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH,clearances_body_parts_feet_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(clearances_total_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(clearances_total_away).text)
@@ -373,7 +373,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH, blocked_crosses_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH, blocked_crosses_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(blocked_shots_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(blocked_shots_away).text)
@@ -385,7 +385,7 @@ def parse_chalkboard(driver):
     action.move_to_element(elem)
     action.click()
     action.perform()
-    wait_res = WebDriverWait(driver, 10).until(element_has_text((By.XPATH, errors_leads_to_goal_home)))
+    wait_res = WebDriverWait(driver, 20).until(element_has_text((By.XPATH, errors_leads_to_goal_home)))
 
     MATCH_STAT.append(driver.find_element_by_xpath(errors_leads_to_shot_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(errors_lead_to_shot_away).text)
@@ -406,7 +406,7 @@ def parse_chalkboard(driver):
 def parse_probable_stat(driver):
     MATCH_STAT = Temp_List()
 
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_probable_stat_goals_home)))
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_probable_stat_goals_home)))
 
     # Probable stat
     MATCH_STAT.append(driver.find_element_by_css_selector(css_probable_stat_goals_home).text)
@@ -448,7 +448,7 @@ def parse_characteristic(driver):
     style_home = []
     style_away = []
 
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath_to_strongs_home)))
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, xpath_to_strongs_home)))
     elem = driver.find_elements_by_xpath(xpath_to_strongs_home)
     for texts in elem:
         if str(texts.text).rpartition("\n")[2] == "Strong":
@@ -499,12 +499,12 @@ def parse_characteristic(driver):
             MATCH_STAT.append(0)
     return MATCH_STAT
 
-def parse_whoscored(url, driver):
+def parse_whoscored(url, driver, db):
     MATCH_STAT = []
     SQL_TEMPLATE = []
     driver.get(url)
 
-    driver.execute_script(script_scroll_down, 700)
+    #driver.execute_script(script_scroll_down, 700)
 
     try:
         MATCH_STAT += parse_characteristic(driver)
@@ -518,11 +518,11 @@ def parse_whoscored(url, driver):
     url = url.replace("Show", "Preview")
     driver.get(url)
 
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath_team_home)))
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, xpath_team_home)))
     HOME = driver.find_element_by_xpath(xpath_team_home).text
     AWAY = driver.find_element_by_xpath(xpath_team_away).text
 
-    driver.execute_script(script_scroll_down, 550)
+    #driver.execute_script(script_scroll_down, 550)
 
     try:
         MATCH_STAT += parse_probable_stat(driver)
@@ -542,22 +542,17 @@ def parse_whoscored(url, driver):
     SQL_TEMPLATE += sql_columns_of_url
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_season)))
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_season)))
 
     elem = str(driver.find_element_by_css_selector(css_season).text)
     SEASON = "20" + str((elem.strip()[-2:]))
     if str((elem.strip()[-6:-3])) in {"May", "Jan", "Feb", "Mar", "Apr"}:
         SEASON = int(SEASON) - 1
 
-    driver.execute_script(script_scroll_down, 1000)
+    #driver.execute_script(script_scroll_down, 1000)
 
-    try:
-        home_stat = parse_yc_rc_goals(xpath_to_home_stat, driver)
-        away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
-    except NoSuchElementException:
-        print(traceback.format_exc())
-        home_stat = parse_yc_rc_goals(xpath_to_home_stat, driver)
-        away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
+    home_stat = parse_yc_rc_goals(xpath_to_home_stat, driver)
+    away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
 
     if home_stat[0] > away_stat[0]:
         MATCH_STAT.append('1')
@@ -581,25 +576,24 @@ def parse_whoscored(url, driver):
 
     # 1 to 45
     try:
-        wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
+        #i tryed to change presence_of_element_located to presence_of_element_located
+        wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
         action = ActionChains(driver)
         elem = driver.find_elements_by_css_selector(css_to_time_scroll)
         action.move_to_element(elem[1])
         action.drag_and_drop_by_offset(elem[1], -497, 0)
         action.perform()
-        time.sleep(5)
+    #    time.sleep(5)
     except MoveTargetOutOfBoundsException:
         print(traceback.format_exc())
-
-        driver.execute_script(script_scroll_down, 1300)
-        wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
-
+        driver.execute_script(script_scroll_down, 1700)
+        wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
         action = ActionChains(driver)
         elem = driver.find_elements_by_css_selector(css_to_time_scroll)
         action.move_to_element(elem[1])
         action.drag_and_drop_by_offset(elem[1], -497, 0)
         action.perform()
-        time.sleep(5)
+    #    time.sleep(5)
 
 
     try:
@@ -610,8 +604,8 @@ def parse_whoscored(url, driver):
     SQL_TEMPLATE += sql_columns_of_half_time_stat
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
-    driver.execute_script(script_scroll_down, 600)
-    wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, referee)))
+    #driver.execute_script(script_scroll_down, 600)
+    wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, referee)))
 
     MATCH_STAT.append("'" + driver.find_element_by_xpath(referee).text.strip() + "'")
     SQL_TEMPLATE += sql_columns_of_referee
@@ -623,11 +617,11 @@ def parse_whoscored(url, driver):
     action.click(elem)
     action.perform()
 
-    driver.execute_script(script_scroll_down, 1100)
+##    driver.execute_script(script_scroll_down, 1100)
     # 1 to 90
     try:
         MATCH_STAT += parse_chalkboard(driver)
-    except AssertionError as ex:
+    except AssertionError :
         print(traceback.format_exc())
         MATCH_STAT += parse_chalkboard(driver)
     SQL_TEMPLATE += sql_columns_of_full_time_chulkboard
@@ -636,29 +630,30 @@ def parse_whoscored(url, driver):
 
     # 1 to 45
     try:
+        wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll_chalkboard)))
         elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
         action = ActionChains(driver)
         action.move_to_element(elem[1])
         action.drag_and_drop_by_offset(elem[1], -497, 0)
         action.perform()
-        time.sleep(5)
+    #    time.sleep(5)
     except MoveTargetOutOfBoundsException:
         print(traceback.format_exc())
-        driver.execute_script(script_scroll_down, 1300)
-        wait_res = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll_chalkboard)))
+        driver.execute_script(script_scroll_down, 1700)
+        wait_res = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll_chalkboard)))
         elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
         action = ActionChains(driver)
         action.move_to_element(elem[1])
         action.drag_and_drop_by_offset(elem[1], -497, 0)
         action.perform()
-        time.sleep(5)
+    #    time.sleep(5)
 
     try:
         MATCH_STAT += parse_chalkboard(driver)
     except AssertionError:
         print(traceback.format_exc())
         MATCH_STAT += parse_chalkboard(driver)
-    SQL_TEMPLATE +=sql_columns_of_half_time_chulkboard
+    SQL_TEMPLATE += sql_columns_of_half_time_chulkboard
     assert len(SQL_TEMPLATE) == len(MATCH_STAT)
 
 
@@ -669,9 +664,11 @@ def parse_whoscored(url, driver):
     for sql_column, stat in zip(SQL_TEMPLATE, MATCH_STAT):
         SQL_string += sql_column + "=" + str(stat) + ", "
     assert len(SQL_string)
-
-
-    db = pymysql.connect(host=db_host, port=db_port, user=db_usr, passwd=db_passwd, db=db_name)
+    team_map = {'Wolverhampton Wan...': 'Wolverhampton Wanderers', 'Man Utd': 'Manchester United'}
+    print(HOME, ' ', AWAY)
+    HOME = team_map.get(HOME.strip(), HOME)
+    AWAY = team_map.get(AWAY.strip(), AWAY)
+    print(HOME, ' ', AWAY)
     cursor = db.cursor()
     assert cursor.execute("SELECT * FROM " + db_name + " WHERE home='" + HOME + "' && away='" + AWAY + "' && season='" + str(SEASON) + "';")
     sql = "UPDATE "+str(db_name)+" SET " + str(SQL_string[:-2]) + " WHERE home='" + HOME + "' && away='" + AWAY + "' && season=" + str(SEASON) + ";"
