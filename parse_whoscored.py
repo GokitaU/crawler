@@ -545,7 +545,7 @@ def parse_whoscored(url, driver, db):
     wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_season)))
 
     elem = str(driver.find_element_by_css_selector(css_season).text)
-    SEASON = "30" + str((elem.strip()[-2:]))
+    SEASON = "20" + str((elem.strip()[-2:]))
     if str((elem.strip()[-6:-3])) in {"May", "Jan", "Feb", "Mar", "Apr"}:
         SEASON = int(SEASON) - 1
 
@@ -668,7 +668,7 @@ def parse_whoscored(url, driver, db):
     AWAY = team_map.get(AWAY.strip(), AWAY)
     print(HOME, ' ', AWAY)
     cursor = db.cursor()
-    assert cursor.execute("SELECT * FROM " + db_name + " WHERE home='" + HOME + "' && away='" + AWAY + "' && season='" + str(SEASON) + "';")
-    sql = "UPDATE "+str(db_name)+" SET " + str(SQL_string[:-2]) + " WHERE home='" + HOME + "' && away='" + AWAY + "' && season=" + str(SEASON) + ";"
+    assert cursor.execute("SELECT * FROM " + db_name + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season='" + str(SEASON) + "';")
+    sql = "UPDATE "+str(db_name)+" SET " + str(SQL_string[:-2]) + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season=" + str(SEASON) + ";"
     cursor.execute(sql)
     db.commit()

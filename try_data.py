@@ -90,7 +90,8 @@ if not list_with_all_matches:
     driver.install_addon(addon_adblock, temporary=True)
     driver.install_addon(addon_cookies, temporary=True)
     driver.set_window_size(1360, 2000)
-    for j in range(10):
+    j=0
+    try:
         while list_with_number_of_season:
             season = list_with_number_of_season.pop()
             driver.get("https://www.whoscored.com/Regions/252/Tournaments/2/Seasons/"+season+"/England-Premier-League")
@@ -130,12 +131,14 @@ if not list_with_all_matches:
             except:
                 print(traceback.format_exc())
                 list_with_number_of_season.insert(0, season)
+                j += 1
                 if j == 9:
                     open_and_write_Seasons_file(list_with_number_of_season)
                     open_and_write_Error_file(list_with_all_matches)
                     driver.quit()
                     driver2.quit()
                     exit(-1)
+    finally:
         open_and_write_Error_file(list_with_all_matches)
         open_and_write_Seasons_file(list_with_number_of_season)
         driver.quit()
@@ -146,7 +149,9 @@ try:
     while list_with_all_matches:
         url_to_match = list_with_all_matches.pop()
         try:
-            if db.cursor().execute("SELECT * FROM " + db_name + " WHERE url='"+url_to_match.replace("Show", "Live") +"' && referee='';")==0:
+            sub = db.cursor().execute("SELECT * FROM " + db_name + " WHERE url='"+url_to_match.replace("Show", "Live") + "';")
+            print(url_to_match.replace("Show", "Live"), ' ', sub)
+            if sub == 0:
                 parse_whoscored(url_to_match, driver2, db)
         except:
             print(traceback.format_exc())
