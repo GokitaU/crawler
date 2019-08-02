@@ -3,7 +3,7 @@ from selenium import webdriver
 import time
 import pymysql
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException,MoveTargetOutOfBoundsException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException,MoveTargetOutOfBoundsException, TimeoutException, WebDriverException
 from parse_whoscored import parse_whoscored
 from selenium.webdriver.firefox.options import Options
 import traceback
@@ -153,6 +153,18 @@ try:
             print(url_to_match.replace("Show", "Live"), ' ', sub)
             if sub == 0:
                 parse_whoscored(url_to_match, driver2, db)
+        except WebDriverException:
+            driver2.quit()
+            driver2 = webdriver.Firefox(options=options, firefox_profile=profile)
+            driver2.set_window_size(1360, 2000)
+            driver2.install_addon(addon_adblock, temporary=True)
+            driver2.install_addon(addon_cookies, temporary=True)
+            sub = db.cursor().execute(
+                "SELECT * FROM " + db_name + " WHERE url='" + url_to_match.replace("Show", "Live") + "';")
+            print(url_to_match.replace("Show", "Live"), ' ', sub)
+            if sub == 0:
+                parse_whoscored(url_to_match, driver2, db)
+    """            
         except:
             print(traceback.format_exc())
             driver2.save_screenshot('screen.png')
@@ -162,6 +174,7 @@ try:
                 open_and_write_Error_file(list_with_all_matches)
                 driver2.quit()
                 exit(-1)
+    """
 finally:
     open_and_write_Error_file(list_with_all_matches)
     driver2.quit()
