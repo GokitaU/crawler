@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException,MoveTargetOutOfBou
 from parse_whoscored import parse_whoscored
 from selenium.webdriver.firefox.options import Options
 import traceback
-from constant_path import db_host, db_passwd, db_port, db_name, db_usr, xpath_to_button_prev_month, xpath_to_table_with_matches, path_to_geckodriver_profile, addon_cookies, addon_adblock, script_scroll_down, Matches_wich_was_no_processed_filepath, Seasons_wich_was_no_processed_filepath
+from constant_path import tb_name_main, db_host, db_passwd, db_port, db_name, db_usr, xpath_to_button_prev_month, xpath_to_table_with_matches, path_to_geckodriver_profile, addon_cookies, addon_adblock, script_scroll_down, Matches_wich_was_no_processed_filepath, Seasons_wich_was_no_processed_filepath
 """
 Получает список ссылок на матчи с сайта whoscored.com:
 -Сезоны хранятся в списке list_of_number_season
@@ -94,6 +94,7 @@ if not list_with_all_matches:
     try:
         while list_with_number_of_season:
             season = list_with_number_of_season.pop()
+            #driver.get("https://www.whoscored.com/Regions/108/Tournaments/5/Seasons/"+str(6461)+"/Italy-Serie-A")
             driver.get("https://www.whoscored.com/Regions/252/Tournaments/2/Seasons/"+season+"/England-Premier-League")
 
 
@@ -149,32 +150,26 @@ try:
     while list_with_all_matches:
         url_to_match = list_with_all_matches.pop()
         try:
-            sub = db.cursor().execute("SELECT * FROM " + db_name + " WHERE url='"+url_to_match.replace("Show", "Live") + "';")
+            sub = db.cursor().execute("SELECT * FROM " + tb_name_main + " WHERE url='"+url_to_match.replace("Show", "Live") + "';")
             print(url_to_match.replace("Show", "Live"), ' ', sub)
             if sub == 0:
                 parse_whoscored(url_to_match, driver2, db)
-        except WebDriverException:
+        except:
+            print(traceback.format_exc())
             driver2.quit()
+            profile = webdriver.FirefoxProfile(path_to_geckodriver_profile)
+            profile.set_preference("intl.accept_languages", "en")
             driver2 = webdriver.Firefox(options=options, firefox_profile=profile)
             driver2.set_window_size(1360, 2000)
             driver2.install_addon(addon_adblock, temporary=True)
             driver2.install_addon(addon_cookies, temporary=True)
-            sub = db.cursor().execute(
-                "SELECT * FROM " + db_name + " WHERE url='" + url_to_match.replace("Show", "Live") + "';")
-            print(url_to_match.replace("Show", "Live"), ' ', sub)
-            if sub == 0:
-                parse_whoscored(url_to_match, driver2, db)
-    """            
-        except:
-            print(traceback.format_exc())
-            driver2.save_screenshot('screen.png')
+
             list_with_all_matches.insert(0, url_to_match)
             j += 1
-            if j == 9:
+            if j == 1:
                 open_and_write_Error_file(list_with_all_matches)
                 driver2.quit()
                 exit(-1)
-    """
 finally:
     open_and_write_Error_file(list_with_all_matches)
     driver2.quit()

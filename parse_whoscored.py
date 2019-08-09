@@ -25,85 +25,204 @@ class element_has_text(object):
         else:
             return False
 
+def get_text_excluding_children(driver, element):
+    return str(driver.execute_script(
+        """ return jQuery(arguments[0]).contents().filter(function() { return this.nodeType == Node.TEXT_NODE; }).text(); """,
+    element))
+
+def get_text_children(driver, element):
+    return str(driver.execute_script(
+        """ return jQuery(arguments[0]).children().text(); """,
+    element))
+
+def parse_shots_zones(driver, xpath_to_shot_detail):
+    on_target_low_left = '0'
+    on_target_high_left = '0'
+    on_target_low_right = '0'
+    on_target_high_right = '0'
+    on_target_low_centre = '0'
+    on_target_high_centre = '0'
+    on_target_low_left_goals = '0'
+    on_target_high_left_goals = '0'
+    on_target_low_right_goals = '0'
+    on_target_high_right_goals = '0'
+    on_target_low_centre_goals = '0'
+    on_target_high_centre_goals = '0'
+    miss_left = '0'
+    miss_right = '0'
+    miss_high_left = '0'
+    miss_high_right = '0'
+    miss_high_centre = '0'
+    post_left = '0'
+    post_right = '0'
+
+    wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, xpath_to_shots_chalkboard)))
+    elem = driver.find_element_by_xpath(xpath_to_shots_chalkboard)
+    action = ActionChains(driver)
+    action.move_to_element(elem)
+    action.click()
+    action.perform()
+
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, xpath_to_shot_detail)))
+    stat = driver.find_elements_by_xpath(xpath_to_shot_detail)
+
+    for elem in stat:
+        WebDriverWait(driver, 30).until(
+            EC.visibility_of(elem))
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowleft has-goals has-goals-and-shots":#left low
+            on_target_low_left = get_text_excluding_children(driver, elem)
+            on_target_low_left_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowleft has-goals":
+            on_target_low_left_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowleft":
+            on_target_low_left = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighleft has-goals has-goals-and-shots":  #left high
+            on_target_high_left = get_text_excluding_children(driver, elem)
+            on_target_high_left_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighleft has-goals":
+            on_target_high_left_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighleft":
+            on_target_high_left = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowcentre has-goals has-goals-and-shots":  # center low
+            on_target_low_centre = get_text_excluding_children(driver, elem)
+            on_target_low_centre_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowcentre has-goals":
+            on_target_low_centre_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowcentre":
+            on_target_low_centre = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighcentre has-goals has-goals-and-shots":  # center high
+            on_target_high_centre = get_text_excluding_children(driver, elem)
+            on_target_high_centre_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighcentre has-goals":
+            on_target_high_centre_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighcentre":
+            on_target_high_centre = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowright has-goals has-goals-and-shots":  # right low
+            on_target_low_right = get_text_excluding_children(driver, elem)
+            on_target_low_right_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowright has-goals":
+            on_target_low_right_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargetlowright":
+            on_target_low_right = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighright has-goals has-goals-and-shots":  # right high
+            on_target_high_right = get_text_excluding_children(driver, elem)
+            on_target_high_right_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighright has-goals":
+            on_target_high_right_goals = get_text_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone ontargethighright":
+            on_target_high_right = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone missleft":#missed left
+            miss_left = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone missright":#missed right
+            miss_right = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone misshighcentre":#missed center
+            miss_high_centre = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone misshighleft":#missed high left
+            miss_high_left = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone misshighright":#missed high right
+            miss_high_right=get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone postleft":#post left
+            post_left = get_text_excluding_children(driver, elem)
+        if elem.get_attribute("class").strip() == "shot-zone postright":#post right
+            post_right = get_text_excluding_children(driver, elem)
+    return [on_target_low_left,
+        on_target_high_left,
+        on_target_low_right,
+        on_target_high_right,
+        on_target_low_centre,
+        on_target_high_centre,
+        on_target_low_left_goals,
+        on_target_high_left_goals,
+        on_target_low_right_goals,
+        on_target_high_right_goals,
+        on_target_low_centre_goals,
+        on_target_high_centre_goals,
+        miss_left,
+        miss_right,
+        miss_high_left,
+        miss_high_right,
+        miss_high_centre,
+        post_left,
+        post_right]
 
 def parse_yc_rc_goals(xpath_to_stat, driver):
-    first_formation = 0
-    second_formation = 0
-    goals_at_hf = 0
-    goals_total = 0
+    first_formation = "0000"
+    second_formation = "0000"
+    hf_goals = 0
+    ft_goals = 0
     goals_at_60_ft = 0
     goals_at_45_to_60 = 0
     sub_in_45_to_60 = 0
-    sub_in_until_45 = 0
+    hf_sub_in = 0
     sub_in_60_ft = 0
-    yc_total = 0
+    ft_yc = 0
     yc_45_to_60 = 0
-    yc_until_45 = 0
+    hf_yc = 0
     yc_60_ft = 0
-    rc_total = 0
+    ft_rc = 0
     rc_45_to_60 = 0
-    rc_until_45 = 0
+    hf_rc = 0
     rc_60_ft = 0
     wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, xpath_to_stat)))
     elem = driver.find_elements_by_xpath(xpath_to_stat)
     for i in elem:
         try:
             if (i.get_attribute("title") == "Formation change" or i.get_attribute("data-minute") == "0") and (
-                    first_formation == 0 or second_formation == 0):
-                if (i.get_attribute("title") == "Formation change"):
+                    first_formation == "0000" or second_formation == "0000"):
+                if i.get_attribute("title") == "Formation change":
                     element = driver.execute_script(script_show_hidden_content, i).split(' ')
-                    second_formation = int(element[-1])
+                    second_formation = str(element[-1])+second_formation
                 if i.get_attribute("data-minute") == "0":
                     element = driver.execute_script(script_show_hidden_content, i).split(' ')
-                    first_formation = int(element[-1])
+                    first_formation = str(element[-1])+first_formation
         except ValueError:
-            first_formation = 4231
-            second_formation = 4231
-        if (i.get_attribute("title") == "Goal"):
-            goals_total += 1
+            first_formation = "42310"
+            second_formation = "42310"
+        if (i.get_attribute("title") == "Goal" or i.get_attribute("title")=="Own goal" or i.get_attribute("title")=="Penalty scored"):
+            ft_goals += 1
             if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
                 goals_at_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
-                goals_at_hf += 1
+                hf_goals += 1
             if int(i.get_attribute("data-minute")) > 60:
                 goals_at_60_ft += 1
         if (i.get_attribute("title") == "Sub in"):
             if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
                 sub_in_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
-                sub_in_until_45 += 1
+                hf_sub_in += 1
             if int(i.get_attribute("data-minute")) > 60:
                 sub_in_60_ft += 1
         if (i.get_attribute("title") == "Yellow Card"):
-            yc_total += 1
+            ft_yc += 1
             if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
                 yc_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
-                yc_until_45 += 1
+                hf_yc += 1
             if int(i.get_attribute("data-minute")) > 60:
                 yc_60_ft += 1
         if (i.get_attribute("title") == "Red Card"):
-            rc_total += 1
+            ft_rc += 1
             if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
                 rc_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
-                rc_until_45 += 1
+                hf_rc += 1
             if int(i.get_attribute("data-minute")) > 60:
                 rc_60_ft += 1
 
 
-    if second_formation == 0:
+    if second_formation == "0000":
         second_formation = first_formation
-    return [goals_total,
-            first_formation, second_formation,
-            goals_at_hf,
-            #goals_at_45_to_60, goals_at_60_ft,
-            sub_in_until_45,
-            #sub_in_45_to_60, sub_in_60_ft,
-            yc_total, yc_until_45,
-            #yc_45_to_60, yc_60_ft,
-            rc_total, rc_until_45,
-            #rc_45_to_60, rc_60_ft
+    ff_line_1, ff_line_2, ff_line_3, ff_line_4, ff_line_5 = tuple(first_formation)[:5]
+    sf_line_1, sf_line_2, sf_line_3, sf_line_4, sf_line_5 = tuple(second_formation)[:5]
+    return [ft_goals,
+            ff_line_1, ff_line_2, ff_line_3, ff_line_4, ff_line_5,
+            sf_line_1, sf_line_2, sf_line_3, sf_line_4, sf_line_5,
+            hf_goals,
+            hf_sub_in,
+            ft_yc, hf_yc,
+            ft_rc, hf_rc,
             ]
 
 def parse_live_table(driver):
@@ -452,67 +571,85 @@ def parse_characteristic(driver):
     elem = driver.find_elements_by_xpath(xpath_to_strongs_home)
     for texts in elem:
         if str(texts.text).rpartition("\n")[2] == "Strong":
-            strongs_home.update({str(texts.text).rpartition("\n")[0]:1})
+            strongs_home.update({str(texts.text).rpartition("\n")[0]:'1'})
         if str(texts.text).rpartition("\n")[2] == "Very Strong":
-            strongs_home.update({str(texts.text).rpartition("\n")[0]:2})
+            strongs_home.update({str(texts.text).rpartition("\n")[0]:'2'})
+    wait_res = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.XPATH, xpath_to_strongs_away)))
     elem = driver.find_elements_by_xpath(xpath_to_strongs_away)
     for texts in elem:
         if str(texts.text).rpartition("\n")[2] == "Strong":
-            strongs_away.update({str(texts.text).rpartition("\n")[0]:1})
+            strongs_away.update({str(texts.text).rpartition("\n")[0]:'1'})
         if str(texts.text).rpartition("\n")[2] == "Very Strong":
-            strongs_away.update({str(texts.text).rpartition("\n")[0]:2})
+            strongs_away.update({str(texts.text).rpartition("\n")[0]:'2'})
+    wait_res = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, xpath_to_weakness_home)))
     elem = driver.find_elements_by_xpath(xpath_to_weakness_home)
     for texts in elem:
         if str(texts.text).rpartition("\n")[2] == "Weak":
-            weakness_home.update({str(texts.text).rpartition("\n")[0]:1})
+            weakness_home.update({str(texts.text).rpartition("\n")[0]:'1'})
         if str(texts.text).rpartition("\n")[2] == "Very Weak":
-            weakness_home.update({str(texts.text).rpartition("\n")[0]:2})
+            weakness_home.update({str(texts.text).rpartition("\n")[0]:'2'})
+    wait_res = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, xpath_to_weakness_away)))
     elem = driver.find_elements_by_xpath(xpath_to_weakness_away)
     for texts in elem:
         if str(texts.text).rpartition("\n")[2] == "Weak":
-            weakness_away.update({str(texts.text).rpartition("\n")[0]:1})
+            weakness_away.update({str(texts.text).rpartition("\n")[0]:'1'})
         if str(texts.text).rpartition("\n")[2] == "Very Weak":
-            weakness_away.update({str(texts.text).rpartition("\n")[0]:2})
+            weakness_away.update({str(texts.text).rpartition("\n")[0]:'2'})
+    wait_res = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, xpath_to_style_home)))
     elem = driver.find_elements_by_xpath(xpath_to_style_home)
     for texts in elem:
         style_home.append(str(texts.text))
+    wait_res = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, xpath_to_style_away)))
     elem = driver.find_elements_by_xpath(xpath_to_style_away)
     for texts in elem:
         style_away.append(str(texts.text))
     for i in list_strongs:
-        MATCH_STAT.append(strongs_home.pop(i, 0))
+        MATCH_STAT.append(strongs_home.pop(i, '0'))
     for i in list_strongs:
-        MATCH_STAT.append(strongs_away.pop(i, 0))
+        MATCH_STAT.append(strongs_away.pop(i, '0'))
     for i in list_weakness:
-        MATCH_STAT.append(weakness_home.pop(i, 0))
+        MATCH_STAT.append(weakness_home.pop(i, '0'))
     for i in list_weakness:
-        MATCH_STAT.append(weakness_away.pop(i, 0))
+        MATCH_STAT.append(weakness_away.pop(i, '0'))
     for i in list_styles:
         if i in style_home:
-            MATCH_STAT.append(1)
+            MATCH_STAT.append('1')
         else:
-            MATCH_STAT.append(0)
+            MATCH_STAT.append('0')
     for i in list_styles:
         if i in style_away:
-            MATCH_STAT.append(1)
+            MATCH_STAT.append('1')
         else:
-            MATCH_STAT.append(0)
+            MATCH_STAT.append('0')
     return MATCH_STAT
 
 def parse_whoscored(url, driver, db):
-    MATCH_STAT = []
-    SQL_TEMPLATE = []
+
+    MAIN_TABLE = []
+    MAIN_TABLE_SQL = []
+    CHARACTERISTIC_TABLE = []
+    CHARACTERISTIC_TABLE_SQL = []
+    HT_TABLE_STAT = []
+    FT_TABLE_STAT = []
+    STAT_SQL = []
+
     driver.get(url)
 
     #driver.execute_script(script_scroll_down, 700)
 
     try:
-        MATCH_STAT += parse_characteristic(driver)
+        CHARACTERISTIC_TABLE += parse_characteristic(driver)
     except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_characteristic(driver)
-    SQL_TEMPLATE += sql_columns_of_characteristic
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+        CHARACTERISTIC_TABLE += parse_characteristic(driver)
+    CHARACTERISTIC_TABLE_SQL += sql_columns_of_url
+    CHARACTERISTIC_TABLE_SQL += sql_columns_of_characteristic
+    assert len(CHARACTERISTIC_TABLE_SQL) == (len(CHARACTERISTIC_TABLE)+1)
 
     assert url.find("Show") != -1
     url = url.replace("Show", "Preview")
@@ -525,22 +662,26 @@ def parse_whoscored(url, driver, db):
     #driver.execute_script(script_scroll_down, 550)
 
     try:
-        MATCH_STAT += parse_probable_stat(driver)
+        CHARACTERISTIC_TABLE += parse_probable_stat(driver)
     except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_probable_stat(driver)
+        CHARACTERISTIC_TABLE += parse_probable_stat(driver)
 
-    SQL_TEMPLATE += sql_columns_of_probable_stat
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+    CHARACTERISTIC_TABLE_SQL += sql_columns_of_probable_stat
+    assert len(CHARACTERISTIC_TABLE_SQL) == (len(CHARACTERISTIC_TABLE)+1)
 
     assert url.find("Preview") != -1
     url = url.replace("Preview", "Live")
     driver.get(url)
 
+    CHARACTERISTIC_TABLE.insert(0, "'" + url + "'")
+    MAIN_TABLE.append("'" + url + "'")
+    HT_TABLE_STAT.append("'" + url + "'")
+    FT_TABLE_STAT.append("'" + url + "'")
 
-    MATCH_STAT.append("'" + url + "'")
-    SQL_TEMPLATE += sql_columns_of_url
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+    MAIN_TABLE_SQL += sql_columns_of_url
+    STAT_SQL += sql_columns_of_url
+    assert len(MAIN_TABLE_SQL) == len(MAIN_TABLE)
 
     wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_season)))
 
@@ -555,28 +696,27 @@ def parse_whoscored(url, driver, db):
     away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
 
     if home_stat[0] > away_stat[0]:
-        MATCH_STAT.append('1')
+        MAIN_TABLE.append('1')
     elif home_stat[0] < away_stat[0]:
-        MATCH_STAT.append('2')
+        MAIN_TABLE.append('2')
     elif home_stat[0] == away_stat[0]:
-        MATCH_STAT.append('0')
-    MATCH_STAT += home_stat
-    MATCH_STAT += away_stat
+        MAIN_TABLE.append('0')
+    MAIN_TABLE += home_stat
+    MAIN_TABLE += away_stat
 
-    SQL_TEMPLATE += sql_columns_of_time_stat
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+    MAIN_TABLE_SQL += sql_columns_of_time_stat
+    assert len(MAIN_TABLE_SQL) == len(MAIN_TABLE)
 
     try:
-        MATCH_STAT += parse_live_table(driver)
+        FT_TABLE_STAT += parse_live_table(driver)
     except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_live_table(driver)
-    SQL_TEMPLATE += sql_columns_of_full_time_stat
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+        FT_TABLE_STAT += parse_live_table(driver)
+    STAT_SQL += sql_columns_of_stat
+    assert len(STAT_SQL) == len(FT_TABLE_STAT)
 
     # 1 to 45
     try:
-        #i tryed to change presence_of_element_located to presence_of_element_located
         wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
         action = ActionChains(driver)
         elem = driver.find_elements_by_css_selector(css_to_time_scroll)
@@ -597,19 +737,18 @@ def parse_whoscored(url, driver, db):
 
 
     try:
-        MATCH_STAT += parse_live_table(driver)
+        HT_TABLE_STAT += parse_live_table(driver)
     except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_live_table(driver)
-    SQL_TEMPLATE += sql_columns_of_half_time_stat
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+        HT_TABLE_STAT += parse_live_table(driver)
+    assert len(HT_TABLE_STAT) == len(STAT_SQL)
 
     #driver.execute_script(script_scroll_down, 600)
     wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, referee)))
 
-    MATCH_STAT.append("'" + driver.find_element_by_xpath(referee).text.strip() + "'")
-    SQL_TEMPLATE += sql_columns_of_referee
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+    MAIN_TABLE.append("'" + driver.find_element_by_xpath(referee).text.strip() + "'")
+    MAIN_TABLE_SQL += sql_columns_of_referee
+    assert len(MAIN_TABLE) == len(MAIN_TABLE_SQL)
 
     elem = driver.find_element_by_xpath(xpath_to_chalkboard)
     action = ActionChains(driver)
@@ -620,13 +759,17 @@ def parse_whoscored(url, driver, db):
 ##    driver.execute_script(script_scroll_down, 1100)
     # 1 to 90
     try:
-        MATCH_STAT += parse_chalkboard(driver)
-    except AssertionError :
+        FT_TABLE_STAT += parse_chalkboard(driver)
+        FT_TABLE_STAT += parse_shots_zones(driver,xpath_to_shots_detail_home)
+        FT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_away)
+    except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_chalkboard(driver)
-    SQL_TEMPLATE += sql_columns_of_full_time_chulkboard
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+        FT_TABLE_STAT += parse_chalkboard(driver)
+        FT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_home)
+        FT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_away)
 
+    STAT_SQL += sql_columns_of_chulkboard
+    assert len(STAT_SQL) == len(FT_TABLE_STAT)
 
     # 1 to 45
     try:
@@ -649,26 +792,47 @@ def parse_whoscored(url, driver, db):
     #    time.sleep(5)
 
     try:
-        MATCH_STAT += parse_chalkboard(driver)
+        HT_TABLE_STAT += parse_chalkboard(driver)
+        HT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_home)
+        HT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_away)
     except AssertionError:
         print(traceback.format_exc())
-        MATCH_STAT += parse_chalkboard(driver)
-    SQL_TEMPLATE += sql_columns_of_half_time_chulkboard
-    assert len(SQL_TEMPLATE) == len(MATCH_STAT)
+        HT_TABLE_STAT += parse_chalkboard(driver)
+        HT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_home)
+        HT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_away)
+    assert len(HT_TABLE_STAT) == len(STAT_SQL)
+
+    print(MAIN_TABLE)
+    print(CHARACTERISTIC_TABLE)
+    print(FT_TABLE_STAT)
+    print(HT_TABLE_STAT)
+
+    MAIN_TABLE_SQL_string = ""
+    for sql_column, stat in zip(MAIN_TABLE_SQL, MAIN_TABLE):
+        MAIN_TABLE_SQL_string += sql_column + "=" + str(stat) + ", "
+    assert len(MAIN_TABLE_SQL_string)
 
 
-    print(MATCH_STAT)
-
-    SQL_string = ""
-    for sql_column, stat in zip(SQL_TEMPLATE, MATCH_STAT):
-        SQL_string += sql_column + "=" + str(stat) + ", "
-    assert len(SQL_string)
     team_map = {'Wolverhampton Wan...': 'Wolverhampton Wanderers', 'Man Utd': 'Manchester United'}
     HOME = team_map.get(HOME.strip(), HOME)
     AWAY = team_map.get(AWAY.strip(), AWAY)
     print(HOME, ' ', AWAY)
+
     cursor = db.cursor()
-    assert cursor.execute("SELECT * FROM " + db_name + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season='" + str(SEASON) + "';")
-    sql = "UPDATE "+str(db_name)+" SET " + str(SQL_string[:-2]) + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season=" + str(SEASON) + ";"
+
+    assert cursor.execute("SELECT * FROM " + tb_name_main + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season='" + str(SEASON) + "';")
+    sql = "UPDATE " + tb_name_main + " SET " + str(MAIN_TABLE_SQL_string[:-2]) + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season=" + str(SEASON) + ";"
     cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_characteristic+"(" + ",".join(CHARACTERISTIC_TABLE_SQL) + ") VALUES (" + ",".join(CHARACTERISTIC_TABLE)+ ");"
+    cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_full_time + "(" + ",".join(STAT_SQL) + ") VALUES (" + ",".join(
+        FT_TABLE_STAT) + ");"
+    cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_half_time + "(" + ",".join(STAT_SQL) + ") VALUES (" + ",".join(
+        HT_TABLE_STAT) + ");"
+    cursor.execute(sql)
+
     db.commit()
