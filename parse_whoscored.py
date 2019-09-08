@@ -63,8 +63,7 @@ def parse_shots_zones(driver, xpath_to_shot_detail):
     action.click()
     action.perform()
 
-    WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.XPATH, xpath_to_shot_detail)))
+
     stat = driver.find_elements_by_xpath(xpath_to_shot_detail)
 
     for elem in stat:
@@ -147,8 +146,8 @@ def parse_shots_zones(driver, xpath_to_shot_detail):
         post_right]
 
 def parse_yc_rc_goals(xpath_to_stat, driver):
-    first_formation = "0000"
-    second_formation = "0000"
+    first_formation = "00000"
+    second_formation = "00000"
     hf_goals = 0
     ft_goals = 0
     goals_at_60_ft = 0
@@ -169,13 +168,17 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
     for i in elem:
         try:
             if (i.get_attribute("title") == "Formation change" or i.get_attribute("data-minute") == "0") and (
-                    first_formation == "0000" or second_formation == "0000"):
+                    first_formation == "00000" or second_formation == "00000"):
                 if i.get_attribute("title") == "Formation change":
-                    element = driver.execute_script(script_show_hidden_content, i).split(' ')
-                    second_formation = str(element[-1])+second_formation
+                    element = str(driver.execute_script(script_show_hidden_content, i).split(' ')[-1])
+                    if not element.isdigit():
+                        element=element[:-1]
+                    second_formation = element+"00000"
                 if i.get_attribute("data-minute") == "0":
-                    element = driver.execute_script(script_show_hidden_content, i).split(' ')
-                    first_formation = str(element[-1])+first_formation
+                    element = str(driver.execute_script(script_show_hidden_content, i).split(' ')[-1])
+                    if not element.isdigit():
+                        element=element[:-1]
+                    first_formation = element+"00000"
         except ValueError:
             first_formation = "42310"
             second_formation = "42310"
@@ -212,7 +215,7 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
                 rc_60_ft += 1
 
 
-    if second_formation == "0000":
+    if second_formation == "00000":
         second_formation = first_formation
     ff_line_1, ff_line_2, ff_line_3, ff_line_4, ff_line_5 = tuple(first_formation)[:5]
     sf_line_1, sf_line_2, sf_line_3, sf_line_4, sf_line_5 = tuple(second_formation)[:5]
@@ -630,6 +633,7 @@ def parse_characteristic(driver):
 
 def parse_whoscored(url, driver, db):
 
+    URL = url
     MAIN_TABLE = []
     MAIN_TABLE_SQL = []
     CHARACTERISTIC_TABLE = []
@@ -639,6 +643,7 @@ def parse_whoscored(url, driver, db):
     STAT_SQL = []
 
     driver.get(url)
+    time.sleep(7)
 
     #driver.execute_script(script_scroll_down, 700)
 
@@ -654,12 +659,9 @@ def parse_whoscored(url, driver, db):
     assert url.find("Show") != -1
     url = url.replace("Show", "Preview")
     driver.get(url)
+    time.sleep(7)
 
-    wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, xpath_team_home)))
-    HOME = driver.find_element_by_xpath(xpath_team_home).text
-    AWAY = driver.find_element_by_xpath(xpath_team_away).text
 
-    #driver.execute_script(script_scroll_down, 550)
 
     try:
         CHARACTERISTIC_TABLE += parse_probable_stat(driver)
@@ -673,6 +675,7 @@ def parse_whoscored(url, driver, db):
     assert url.find("Preview") != -1
     url = url.replace("Preview", "Live")
     driver.get(url)
+    time.sleep(7)
 
     CHARACTERISTIC_TABLE.insert(0, "'" + url + "'")
     MAIN_TABLE.append("'" + url + "'")
@@ -683,14 +686,6 @@ def parse_whoscored(url, driver, db):
     STAT_SQL += sql_columns_of_url
     assert len(MAIN_TABLE_SQL) == len(MAIN_TABLE)
 
-    wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_season)))
-
-    elem = str(driver.find_element_by_css_selector(css_season).text)
-    SEASON = "20" + str((elem.strip()[-2:]))
-    if str((elem.strip()[-6:-3])) in {"May", "Jan", "Feb", "Mar", "Apr"}:
-        SEASON = int(SEASON) - 1
-
-    #driver.execute_script(script_scroll_down, 1000)
 
     home_stat = parse_yc_rc_goals(xpath_to_home_stat, driver)
     away_stat = parse_yc_rc_goals(xpath_to_away_stat, driver)
@@ -723,7 +718,6 @@ def parse_whoscored(url, driver, db):
         action.move_to_element(elem[1])
         action.drag_and_drop_by_offset(elem[1], -497, 0)
         action.perform()
-    #    time.sleep(5)
     except MoveTargetOutOfBoundsException:
         print(traceback.format_exc())
         driver.execute_script(script_scroll_down, 1700)
@@ -733,7 +727,6 @@ def parse_whoscored(url, driver, db):
         action.move_to_element(elem[1])
         action.drag_and_drop_by_offset(elem[1], -497, 0)
         action.perform()
-    #    time.sleep(5)
 
 
     try:
@@ -746,7 +739,11 @@ def parse_whoscored(url, driver, db):
     #driver.execute_script(script_scroll_down, 600)
     wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, referee)))
 
-    MAIN_TABLE.append("'" + driver.find_element_by_xpath(referee).text.strip() + "'")
+    try:
+        referee_sub = "'" + driver.find_element_by_xpath(referee).text.strip() + "'"
+    except:
+        referee_sub = "'"+'Mike Dean'+"'"
+    MAIN_TABLE.append(referee_sub)
     MAIN_TABLE_SQL += sql_columns_of_referee
     assert len(MAIN_TABLE) == len(MAIN_TABLE_SQL)
 
@@ -812,16 +809,10 @@ def parse_whoscored(url, driver, db):
         MAIN_TABLE_SQL_string += sql_column + "=" + str(stat) + ", "
     assert len(MAIN_TABLE_SQL_string)
 
-
-    team_map = {'Wolverhampton Wan...': 'Wolverhampton Wanderers', 'Man Utd': 'Manchester United'}
-    HOME = team_map.get(HOME.strip(), HOME)
-    AWAY = team_map.get(AWAY.strip(), AWAY)
-    print(HOME, ' ', AWAY)
-
     cursor = db.cursor()
 
-    assert cursor.execute("SELECT * FROM " + tb_name_main + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season='" + str(SEASON) + "';")
-    sql = "UPDATE " + tb_name_main + " SET " + str(MAIN_TABLE_SQL_string[:-2]) + " WHERE home='" + HOME + "' AND away='" + AWAY + "' AND season=" + str(SEASON) + ";"
+    assert cursor.execute("SELECT * FROM " + tb_name_main + " WHERE url='" + URL + "';")
+    sql = "UPDATE " + tb_name_main + " SET " + str(MAIN_TABLE_SQL_string[:-2]) + " WHERE url='" + URL + "';"
     cursor.execute(sql)
 
     sql = "INSERT INTO " + tb_name_characteristic+"(" + ",".join(CHARACTERISTIC_TABLE_SQL) + ") VALUES (" + ",".join(CHARACTERISTIC_TABLE)+ ");"
