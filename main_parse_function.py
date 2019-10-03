@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 import pymysql
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, MoveTargetOutOfBoundsException
+from selenium.common.exceptions import NoSuchElementException, MoveTargetOutOfBoundsException, TimeoutException
 from constant_path import *
 
 class Temp_List(list):
@@ -24,6 +24,35 @@ class element_has_text(object):
             return element
         else:
             return False
+
+def move_part(driver, len_of_shift, function, time_scroll):
+    STAT = []
+    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, time_scroll)))
+    action = ActionChains(driver)
+    elem = driver.find_elements_by_css_selector(time_scroll)
+    action.move_to_element(elem[1])
+    action.drag_and_drop_by_offset(elem[1], len_of_shift, 0)
+    action.perform()
+    time.sleep(1)
+    elem = driver.find_elements_by_css_selector(time_scroll)
+    X1 = elem[1].location.get('x')
+    X0 = elem[0].location.get('x')
+    print(elem[0].text, "-", elem[1].text)
+    try:
+        STAT += function(driver)
+    except AssertionError:
+        print(traceback.format_exc())
+        STAT += function(driver)
+
+    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, time_scroll)))
+    action = ActionChains(driver)
+    elem = driver.find_elements_by_css_selector(time_scroll)
+    action.move_to_element(elem[0])
+    action.drag_and_drop_by_offset(elem[0], X1 - X0 + 5, 0)
+    action.perform()
+    time.sleep(1)
+
+    return STAT
 
 def get_text_excluding_children(driver, element):
     return str(driver.execute_script(
@@ -150,19 +179,36 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
     second_formation = "00000"
     hf_goals = 0
     ft_goals = 0
-    goals_at_60_ft = 0
-    goals_at_45_to_60 = 0
-    sub_in_45_to_60 = 0
+    goals_at_0_15 = 0
+    goals_at_15_30 = 0
+    goals_at_30_45 = 0
+    goals_at_45_60 = 0
+    goals_at_60_75 = 0
+    goals_at_75_90 = 0
+    sub_in_at_0_15 = 0
+    sub_in_at_15_30 = 0
+    sub_in_at_30_45 = 0
+    sub_in_at_45_60 = 0
+    sub_in_at_60_75 = 0
+    sub_in_at_75_90 = 0
     hf_sub_in = 0
-    sub_in_60_ft = 0
     ft_yc = 0
-    yc_45_to_60 = 0
     hf_yc = 0
-    yc_60_ft = 0
+    yc_at_0_15 = 0
+    yc_at_15_30 = 0
+    yc_at_30_45 = 0
+    yc_at_45_60 = 0
+    yc_at_60_75 = 0
+    yc_at_75_90 = 0
     ft_rc = 0
-    rc_45_to_60 = 0
     hf_rc = 0
-    rc_60_ft = 0
+    rc_at_0_15 = 0
+    rc_at_15_30 = 0
+    rc_at_30_45 = 0
+    rc_at_45_60 = 0
+    rc_at_60_75 = 0
+    rc_at_75_90 = 0
+
     wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, xpath_to_stat)))
     elem = driver.find_elements_by_xpath(xpath_to_stat)
     for i in elem:
@@ -184,36 +230,67 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
             second_formation = "42310"
         if (i.get_attribute("title") == "Goal" or i.get_attribute("title")=="Own goal" or i.get_attribute("title")=="Penalty scored"):
             ft_goals += 1
-            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
-                goals_at_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
                 hf_goals += 1
-            if int(i.get_attribute("data-minute")) > 60:
-                goals_at_60_ft += 1
+            if int(i.get_attribute("data-minute")) <= 15:
+                goals_at_0_15 += 1
+            if int(i.get_attribute("data-minute")) > 15 and int(i.get_attribute("data-minute")) <= 30:
+                goals_at_15_30 += 1
+            if int(i.get_attribute("data-minute")) > 30 and int(i.get_attribute("data-minute")) <= 45:
+                goals_at_30_45 += 1
+            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) <= 60:
+                goals_at_45_60 += 1
+            if int(i.get_attribute("data-minute")) > 60 and int(i.get_attribute("data-minute")) <= 75:
+                goals_at_60_75 += 1
+            if int(i.get_attribute("data-minute")) > 75:
+                goals_at_75_90 += 1
         if (i.get_attribute("title") == "Sub in"):
-            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
-                sub_in_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
                 hf_sub_in += 1
-            if int(i.get_attribute("data-minute")) > 60:
-                sub_in_60_ft += 1
+            if int(i.get_attribute("data-minute")) <= 15 :
+                sub_in_at_0_15 += 1
+            if int(i.get_attribute("data-minute")) > 15 and int(i.get_attribute("data-minute")) <= 30:
+                sub_in_at_15_30 += 1
+            if int(i.get_attribute("data-minute")) > 30 and int(i.get_attribute("data-minute")) <= 45:
+                sub_in_at_30_45 += 1
+            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) <= 60:
+                sub_in_at_45_60 += 1
+            if int(i.get_attribute("data-minute")) > 60 and int(i.get_attribute("data-minute")) <= 75:
+                sub_in_at_60_75 += 1
+            if int(i.get_attribute("data-minute")) > 75:
+                sub_in_at_75_90 += 1
         if (i.get_attribute("title") == "Yellow Card"):
             ft_yc += 1
-            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
-                yc_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
                 hf_yc += 1
-            if int(i.get_attribute("data-minute")) > 60:
-                yc_60_ft += 1
+            if int(i.get_attribute("data-minute")) <= 15 :
+                yc_at_0_15 += 1
+            if int(i.get_attribute("data-minute")) > 15 and int(i.get_attribute("data-minute")) <= 30:
+                yc_at_15_30 += 1
+            if int(i.get_attribute("data-minute")) > 30 and int(i.get_attribute("data-minute")) <= 45:
+                yc_at_30_45 += 1
+            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) <= 60:
+                yc_at_45_60 += 1
+            if int(i.get_attribute("data-minute")) > 60 and int(i.get_attribute("data-minute")) <= 75:
+                yc_at_60_75 += 1
+            if int(i.get_attribute("data-minute")) > 75:
+                yc_at_75_90 += 1
         if (i.get_attribute("title") == "Red Card"):
             ft_rc += 1
-            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) < 61:
-                rc_45_to_60 += 1
             if int(i.get_attribute("data-minute")) <= 45:
                 hf_rc += 1
-            if int(i.get_attribute("data-minute")) > 60:
-                rc_60_ft += 1
-
+            if int(i.get_attribute("data-minute")) <= 15 :
+                rc_at_0_15 += 1
+            if int(i.get_attribute("data-minute")) > 15 and int(i.get_attribute("data-minute")) <= 30:
+                rc_at_15_30 += 1
+            if int(i.get_attribute("data-minute")) > 30 and int(i.get_attribute("data-minute")) <= 45:
+                rc_at_30_45 += 1
+            if int(i.get_attribute("data-minute")) > 45 and int(i.get_attribute("data-minute")) <= 60:
+                rc_at_45_60 += 1
+            if int(i.get_attribute("data-minute")) > 60 and int(i.get_attribute("data-minute")) <= 75:
+                rc_at_60_75 += 1
+            if int(i.get_attribute("data-minute")) > 75:
+                rc_at_75_90 += 1
 
     if second_formation == "00000":
         second_formation = first_formation
@@ -222,10 +299,10 @@ def parse_yc_rc_goals(xpath_to_stat, driver):
     return [ft_goals,
             ff_line_1, ff_line_2, ff_line_3, ff_line_4, ff_line_5,
             sf_line_1, sf_line_2, sf_line_3, sf_line_4, sf_line_5,
-            hf_goals,
+            hf_goals, goals_at_0_15, goals_at_15_30, goals_at_30_45, goals_at_45_60, goals_at_60_75, goals_at_75_90,
             hf_sub_in,
-            ft_yc, hf_yc,
-            ft_rc, hf_rc,
+            ft_yc, hf_yc, yc_at_0_15, yc_at_15_30, yc_at_30_45, yc_at_45_60, yc_at_60_75, yc_at_75_90,
+            ft_rc, hf_rc, rc_at_0_15, rc_at_15_30, rc_at_30_45, rc_at_45_60, rc_at_60_75, rc_at_75_90
             ]
 
 def parse_live_table(driver):
@@ -643,7 +720,10 @@ def parse_whoscored(url, driver, db):
     STAT_SQL = []
 
     driver.get(url)
-    time.sleep(7)
+    try:
+        wait_res = WebDriverWait(driver, 60).until(EC.url_contains("https://1xbet."))
+    except TimeoutException:
+        pass
 
     #driver.execute_script(script_scroll_down, 700)
 
@@ -659,9 +739,10 @@ def parse_whoscored(url, driver, db):
     assert url.find("Show") != -1
     url = url.replace("Show", "Preview")
     driver.get(url)
-    time.sleep(7)
-
-
+    try:
+        wait_res = WebDriverWait(driver, 60).until(EC.url_contains("https://1xbet."))
+    except TimeoutException:
+        pass
 
     try:
         CHARACTERISTIC_TABLE += parse_probable_stat(driver)
@@ -675,7 +756,10 @@ def parse_whoscored(url, driver, db):
     assert url.find("Preview") != -1
     url = url.replace("Preview", "Live")
     driver.get(url)
-    time.sleep(7)
+    try:
+        wait_res = WebDriverWait(driver, 60).until(EC.url_contains("https://1xbet."))
+    except TimeoutException:
+        pass
 
     CHARACTERISTIC_TABLE.insert(0, "'" + url + "'")
     MAIN_TABLE.append("'" + url + "'")
@@ -747,6 +831,21 @@ def parse_whoscored(url, driver, db):
     MAIN_TABLE_SQL += sql_columns_of_referee
     assert len(MAIN_TABLE) == len(MAIN_TABLE_SQL)
 
+    FIRST_STAT = [str('"'+URL+'"')]
+    SECOND_STAT = [str('"'+URL+'"')]
+    THIRD_STAT = [str('"'+URL+'"')]
+    FOURTH_STAT = [str('"'+URL+'"')]
+    FIFTH_STAT = [str('"'+URL+'"')]
+    SIX_STAT = [str('"'+URL+'"')]
+
+    FIRST_STAT += move_part(driver, -323, parse_live_table, css_to_time_scroll)
+    SECOND_STAT += move_part(driver, 155, parse_live_table, css_to_time_scroll)
+    THIRD_STAT += move_part(driver, 155, parse_live_table, css_to_time_scroll)
+    FOURTH_STAT += move_part(driver, 185, parse_live_table, css_to_time_scroll)
+    FIFTH_STAT += move_part(driver, 170, parse_live_table, css_to_time_scroll)
+    SIX_STAT += move_part(driver, 155, parse_live_table, css_to_time_scroll)
+
+
     elem = driver.find_element_by_xpath(xpath_to_chalkboard)
     action = ActionChains(driver)
     action.move_to_element(elem)
@@ -764,6 +863,7 @@ def parse_whoscored(url, driver, db):
         FT_TABLE_STAT += parse_chalkboard(driver)
         FT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_home)
         FT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_away)
+
 
     STAT_SQL += sql_columns_of_chulkboard
     assert len(STAT_SQL) == len(FT_TABLE_STAT)
@@ -799,10 +899,26 @@ def parse_whoscored(url, driver, db):
         HT_TABLE_STAT += parse_shots_zones(driver, xpath_to_shots_detail_away)
     assert len(HT_TABLE_STAT) == len(STAT_SQL)
 
+
+    FIRST_STAT += move_part(driver, -323, parse_chalkboard, css_to_time_scroll_chalkboard)
+    SECOND_STAT += move_part(driver, 155, parse_chalkboard, css_to_time_scroll_chalkboard)
+    THIRD_STAT += move_part(driver, 155, parse_chalkboard, css_to_time_scroll_chalkboard)
+    FOURTH_STAT += move_part(driver, 185, parse_chalkboard, css_to_time_scroll_chalkboard)
+    FIFTH_STAT += move_part(driver, 170, parse_chalkboard, css_to_time_scroll_chalkboard)
+    SIX_STAT += move_part(driver, 155, parse_chalkboard, css_to_time_scroll_chalkboard)
+
+
     print(MAIN_TABLE)
     print(CHARACTERISTIC_TABLE)
     print(FT_TABLE_STAT)
     print(HT_TABLE_STAT)
+    print(FIRST_STAT)
+    print(SECOND_STAT)
+    print(THIRD_STAT)
+    print(FOURTH_STAT)
+    print(FIFTH_STAT)
+    print(SIX_STAT)
+
 
     MAIN_TABLE_SQL_string = ""
     for sql_column, stat in zip(MAIN_TABLE_SQL, MAIN_TABLE):
@@ -826,4 +942,29 @@ def parse_whoscored(url, driver, db):
         HT_TABLE_STAT) + ");"
     cursor.execute(sql)
 
+    sql = "INSERT INTO " + tb_name_1_15_stat + "(" + ",".join(STAT_SQL[:-38]) + ") VALUES (" + ",".join(
+        FIRST_STAT) + ");"
+    cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_15_30_stat + "(" + ",".join(STAT_SQL[:-38]) + ") VALUES (" + ",".join(
+        SECOND_STAT) + ");"
+    cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_30_45_stat + "(" + ",".join(STAT_SQL[:-38]) + ") VALUES (" + ",".join(
+        THIRD_STAT) + ");"
+    cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_45_60_stat + "(" + ",".join(STAT_SQL[:-38]) + ") VALUES (" + ",".join(
+        FOURTH_STAT) + ");"
+    cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_60_75_stat + "(" + ",".join(STAT_SQL[:-38]) + ") VALUES (" + ",".join(
+        FIFTH_STAT) + ");"
+    cursor.execute(sql)
+
+    sql = "INSERT INTO " + tb_name_75_90_stat + "(" + ",".join(STAT_SQL[:-38]) + ") VALUES (" + ",".join(
+        SIX_STAT) + ");"
+    cursor.execute(sql)
     db.commit()
+
+    print("DONE!")

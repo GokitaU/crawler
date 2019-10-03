@@ -1,7 +1,7 @@
 # Парсит все матчи сезона для сезонов из list_with_number_of_season
 from selenium import webdriver
 import pymysql
-from parse_whoscored import parse_whoscored
+from main_parse_function import parse_whoscored
 from selenium.webdriver.firefox.options import Options
 import traceback
 from constant_path import tb_name_main, db_host, db_passwd, db_port, db_usr, path_to_geckodriver_profile, addon_cookies, addon_adblock_ultim, country_map
@@ -15,7 +15,7 @@ from constant_path import tb_name_main, db_host, db_passwd, db_port, db_usr, pat
 """
 
 options = Options()
-options.headless = False
+options.headless = True
 
 profile = webdriver.FirefoxProfile(path_to_geckodriver_profile)
 profile.set_preference("intl.accept_languages", "en")
