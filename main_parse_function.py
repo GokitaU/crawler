@@ -27,16 +27,24 @@ class element_has_text(object):
 
 def move_part(driver, len_of_shift, function, time_scroll):
     STAT = []
-    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, time_scroll)))
-    action = ActionChains(driver)
-    elem = driver.find_elements_by_css_selector(time_scroll)
-    action.move_to_element(elem[1])
-    action.drag_and_drop_by_offset(elem[1], len_of_shift, 0)
-    action.perform()
-    time.sleep(1)
+
     elem = driver.find_elements_by_css_selector(time_scroll)
     X1 = elem[1].location.get('x')
     X0 = elem[0].location.get('x')
+    print("INPUT POSSITIONS(X1, X0): ", X1, X0)
+    WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, time_scroll)))
+    print(len_of_shift)
+
+    action = ActionChains(driver)
+    elem = driver.find_elements_by_css_selector(time_scroll)
+    action.move_to_element(elem[1])
+    action.drag_and_drop_by_offset(elem[1], len_of_shift, 0).perform()
+
+    WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, time_scroll)))
+    elem = driver.find_elements_by_css_selector(time_scroll)
+    X1 = elem[1].location.get('x')
+    X0 = elem[0].location.get('x')
+    print("AFTER TRANSFROM(X1, X0): ", X1, X0)
     print(elem[0].text, "-", elem[1].text)
     try:
         STAT += function(driver)
@@ -44,14 +52,17 @@ def move_part(driver, len_of_shift, function, time_scroll):
         print(traceback.format_exc())
         STAT += function(driver)
 
-    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, time_scroll)))
+    WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, time_scroll)))
     action = ActionChains(driver)
     elem = driver.find_elements_by_css_selector(time_scroll)
     action.move_to_element(elem[0])
-    action.drag_and_drop_by_offset(elem[0], X1 - X0 + 5, 0)
-    action.perform()
-    time.sleep(1)
+    action.drag_and_drop_by_offset(elem[0], X1 - X0 + 5, 0).perform()
 
+    WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, time_scroll)))
+    elem = driver.find_elements_by_css_selector(time_scroll)
+    X1 = elem[1].location.get('x')
+    X0 = elem[0].location.get('x')
+    print("OUTPUT POSSITIONS(X1, X0): ", X1, X0)
     return STAT
 
 def get_text_excluding_children(driver, element):
@@ -839,8 +850,8 @@ def parse_whoscored(url, driver, db):
     SIX_STAT = [str('"'+URL+'"')]
 
     FIRST_STAT += move_part(driver, -323, parse_live_table, css_to_time_scroll)
-    SECOND_STAT += move_part(driver, 155, parse_live_table, css_to_time_scroll)
-    THIRD_STAT += move_part(driver, 155, parse_live_table, css_to_time_scroll)
+    SECOND_STAT += move_part(driver, 156, parse_live_table, css_to_time_scroll)
+    THIRD_STAT += move_part(driver, 154, parse_live_table, css_to_time_scroll)
     FOURTH_STAT += move_part(driver, 185, parse_live_table, css_to_time_scroll)
     FIFTH_STAT += move_part(driver, 170, parse_live_table, css_to_time_scroll)
     SIX_STAT += move_part(driver, 155, parse_live_table, css_to_time_scroll)
