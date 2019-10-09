@@ -805,23 +805,13 @@ def parse_whoscored(url, driver, db):
     STAT_SQL += sql_columns_of_stat
     assert len(STAT_SQL) == len(FT_TABLE_STAT)
 
-    # 1 to 45
-    try:
-        wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
-        action = ActionChains(driver)
-        elem = driver.find_elements_by_css_selector(css_to_time_scroll)
-        action.move_to_element(elem[1])
-        action.drag_and_drop_by_offset(elem[1], -497, 0)
-        action.perform()
-    except MoveTargetOutOfBoundsException:
-        print(traceback.format_exc())
-        driver.execute_script(script_scroll_down, 1700)
-        wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
-        action = ActionChains(driver)
-        elem = driver.find_elements_by_css_selector(css_to_time_scroll)
-        action.move_to_element(elem[1])
-        action.drag_and_drop_by_offset(elem[1], -497, 0)
-        action.perform()
+    wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll)))
+    action = ActionChains(driver)
+    elem = driver.find_elements_by_css_selector(css_to_time_scroll)
+    action.move_to_element(elem[1])
+    X1 = elem[1].location.get('x')
+    new_possition = 655 - X1
+    action.drag_and_drop_by_offset(elem[1], new_possition, 0).perform()
 
 
     try:
@@ -831,8 +821,7 @@ def parse_whoscored(url, driver, db):
         HT_TABLE_STAT += parse_live_table(driver)
     assert len(HT_TABLE_STAT) == len(STAT_SQL)
 
-    #driver.execute_script(script_scroll_down, 600)
-    wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, referee)))
+    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, referee)))
 
     try:
         referee_sub = "'" + driver.find_element_by_xpath(referee).text.strip() + "'"
@@ -879,25 +868,14 @@ def parse_whoscored(url, driver, db):
     STAT_SQL += sql_columns_of_chulkboard
     assert len(STAT_SQL) == len(FT_TABLE_STAT)
 
-    # 1 to 45
-    try:
-        wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll_chalkboard)))
-        elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
-        action = ActionChains(driver)
-        action.move_to_element(elem[1])
-        action.drag_and_drop_by_offset(elem[1], -497, 0)
-        action.perform()
-    #    time.sleep(5)
-    except MoveTargetOutOfBoundsException:
-        print(traceback.format_exc())
-        driver.execute_script(script_scroll_down, 1700)
-        wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll_chalkboard)))
-        elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
-        action = ActionChains(driver)
-        action.move_to_element(elem[1])
-        action.drag_and_drop_by_offset(elem[1], -497, 0)
-        action.perform()
-    #    time.sleep(5)
+    wait_res = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_to_time_scroll_chalkboard)))
+    elem = driver.find_elements_by_css_selector(css_to_time_scroll_chalkboard)
+    action = ActionChains(driver)
+    action.move_to_element(elem[1])
+    X1 = elem[1].location.get('x')
+    new_possition = 655 - X1
+    action.drag_and_drop_by_offset(elem[1], new_possition, 0).perform()
+
 
     try:
         HT_TABLE_STAT += parse_chalkboard(driver)
