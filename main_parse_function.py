@@ -29,9 +29,9 @@ def move_part(driver, len_of_shift, function, time_scroll):
     STAT = []
 
     elem = driver.find_elements_by_css_selector(time_scroll)
-    X1 = elem[1].location.get('x')
+    X2 = elem[1].location.get('x')
     X0 = elem[0].location.get('x')
-    print("INPUT POSSITIONS(X1, X0): ", X1, X0)
+    print("INPUT POSSITIONS(X1, X0): ", X2, X0)
     WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, time_scroll)))
     print(len_of_shift)
 
@@ -44,6 +44,8 @@ def move_part(driver, len_of_shift, function, time_scroll):
     elem = driver.find_elements_by_css_selector(time_scroll)
     X1 = elem[1].location.get('x')
     X0 = elem[0].location.get('x')
+    assert X2 != X1
+    shift = X1 - X0 + 5 
     print("AFTER TRANSFROM(X1, X0): ", X1, X0)
     print(elem[0].text, "-", elem[1].text)
     try:
@@ -56,7 +58,7 @@ def move_part(driver, len_of_shift, function, time_scroll):
     action = ActionChains(driver)
     elem = driver.find_elements_by_css_selector(time_scroll)
     action.move_to_element(elem[0])
-    action.drag_and_drop_by_offset(elem[0], X1 - X0 + 5, 0).perform()
+    action.drag_and_drop_by_offset(elem[0], shift, 0).perform()
 
     WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, time_scroll)))
     elem = driver.find_elements_by_css_selector(time_scroll)
@@ -331,7 +333,7 @@ def parse_live_table(driver):
     action.click()
     action.perform()
 
-    wait_res = WebDriverWait(driver, 30).until(element_has_text((By.XPATH, xpath_woodwork_home)))
+    wait_res = WebDriverWait(driver, 30).until(element_has_text((By.XPATH,xpath_shots_on_target_home)))
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_total_shots_home).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_total_shots_away).text)
     MATCH_STAT.append(driver.find_element_by_xpath(xpath_shots_on_target_home).text)
@@ -810,7 +812,7 @@ def parse_whoscored(url, driver, db):
     elem = driver.find_elements_by_css_selector(css_to_time_scroll)
     action.move_to_element(elem[1])
     X1 = elem[1].location.get('x')
-    new_possition = 655 - X1
+    new_possition = 630 - X1
     action.drag_and_drop_by_offset(elem[1], new_possition, 0).perform()
 
 
@@ -873,7 +875,7 @@ def parse_whoscored(url, driver, db):
     action = ActionChains(driver)
     action.move_to_element(elem[1])
     X1 = elem[1].location.get('x')
-    new_possition = 655 - X1
+    new_possition = 630 - X1
     action.drag_and_drop_by_offset(elem[1], new_possition, 0).perform()
 
 

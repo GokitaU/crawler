@@ -54,7 +54,7 @@ for i in country_map:
                 list_with_all_matches.insert(0, url_to_match)
                 try_counter += 1
                 print("Current attemp:", try_counter)
-                if try_counter == 5:
+                if try_counter == 1000:
                     exit(-1)
     finally:
         driver.quit()
